@@ -19,7 +19,6 @@ const passport = require("passport");
 const rateLimit = require("express-rate-limit");
 var hpp = require("hpp");
 const mongoSanitize = require("express-mongo-sanitize");
-// const { Server } = require("socket.io");
 const http = require("http");
 const compression = require('compression');
 
@@ -35,13 +34,8 @@ const Idea = require("./models/IdeasSchema")
 
 const server = http.createServer(app);
 
-// Use the express.static middleware to serve static files from the public folder
 app.use(express.static(__dirname + "/public"));
-// logger.error("hello error")
-// logger.debug("heelo debug")
-// logger.warn("hello warn")
-// logger.info("ghello info")
-//app.use(express.static("public"));
+
 const corsOptions = {
   origin: [
     "https://brainstorming-omega.vercel.app",
@@ -91,14 +85,10 @@ const limiter = rateLimit({
     // Use the first IP address from X-Forwarded-For header
     return req.headers["x-forwarded-for"]?.split(",")[0] || req.ip;
   },
-
   // store: ... , // Use an external store for more precise rate limiting
 });
 
-// Apply the rate limiting middleware to all requests
 app.use(limiter);
-//app.use(morgan('combined', { stream: accessLogStream }))
-//app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification));
@@ -122,14 +112,6 @@ app.use(
 app.use(xss());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-// app.use(hpp());
-// app.use(
-//   mongoSanitize({
-//     allowDots: true,
-//     replaceWith: '_',
-//   }),
-// );
-// app.use(xss())
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -157,7 +139,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/api", upload.array("files"), (req, res) => {
-  // Sets multer to intercept files named "files" on uploaded form data
 
   console.log(req.body); // Logs form body values
   console.log(req.files); // Logs any files
@@ -187,7 +168,6 @@ app.post("/uploadMultipleImages", upload.array("files"), (req, res) => {
 });
 
 app.get("/", (req, res, next) => {
-  // Imagine you're serving a secret treasure map to your users!
   const treasureMap = {
     message: "🗺️ Welcome to the Treasure Hunt API! 🏴‍☠️",
     clues: [
@@ -205,43 +185,10 @@ app.get("/", (req, res, next) => {
 app.use("/api", privateRoutes);
 app.use("/api", publicRoutes);
 app.use("/api", Routes);
-// app.use(express.static(path.join(__dirname , '../client/build')))
-// app.get("*" , function (req,res) {
-//   res.sendFile(path.join(__dirname, '../client/build/index.html'))
 
-// }
-// )
 
 app.use(notFound);
 app.use(errorHandler);
-// const io = new Server(server, {
-//   cors: {
-//     origin: ["http://localhost:4000", "https://brainstorming-ecru.vercel.app/"],
-//     methods: ["GET", "POST"],
-//   },
-// });
-// io.on("connection", (socket) => {
-//   //  console.log("helllllllllllooooooooooooooooooooooooooooo socket connection");
-//   //  console.log(socket.id);
-
-//   socket.on("join_room", (data) => {
-//     socket.join(data);
-//     //  console.log("helllllllllllooooooooooooooooooooooooooooo join room");
-//     //  console.log("User Joined Room: " + data);
-//   });
-
-//   socket.on("send_message", async (data) => {
-//     //  console.log("helllllllllllooooooooooooooooooooooooooooo send message");
-//     //  console.log({ data });
-//     const newData = await Idea.findById(data.spark._id).populate("Team").populate("WrittenBy");
-//     socket.to(data.team).emit("receive_message", newData);
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("USER DISCONNECTED");
-//   });
-// });
-console.log(process.env.DB_CONN)
 mongoose
   .connect(process.env.DB_CONN, {
     useNewUrlParser: true,
@@ -253,7 +200,5 @@ mongoose
     });
   })
   .catch((err) => {
-    console.error(err);
+    console.log(err);
   });
-
-//last to catch any wrong url ( needs cool 404 page :) )
