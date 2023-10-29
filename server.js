@@ -19,7 +19,7 @@ const passport = require("passport");
 const rateLimit = require("express-rate-limit");
 var hpp = require("hpp");
 const mongoSanitize = require("express-mongo-sanitize");
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 const http = require("http");
 const compression = require('compression');
 
@@ -214,33 +214,33 @@ app.use("/api", Routes);
 
 app.use(notFound);
 app.use(errorHandler);
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:4000", "https://brainstorming-ecru.vercel.app/"],
-    methods: ["GET", "POST"],
-  },
-});
-io.on("connection", (socket) => {
-  //  console.log("helllllllllllooooooooooooooooooooooooooooo socket connection");
-  //  console.log(socket.id);
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["http://localhost:4000", "https://brainstorming-ecru.vercel.app/"],
+//     methods: ["GET", "POST"],
+//   },
+// });
+// io.on("connection", (socket) => {
+//   //  console.log("helllllllllllooooooooooooooooooooooooooooo socket connection");
+//   //  console.log(socket.id);
 
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    //  console.log("helllllllllllooooooooooooooooooooooooooooo join room");
-    //  console.log("User Joined Room: " + data);
-  });
+//   socket.on("join_room", (data) => {
+//     socket.join(data);
+//     //  console.log("helllllllllllooooooooooooooooooooooooooooo join room");
+//     //  console.log("User Joined Room: " + data);
+//   });
 
-  socket.on("send_message", async (data) => {
-    //  console.log("helllllllllllooooooooooooooooooooooooooooo send message");
-    //  console.log({ data });
-    const newData = await Idea.findById(data.spark._id).populate("Team").populate("WrittenBy");
-    socket.to(data.team).emit("receive_message", newData);
-  });
+//   socket.on("send_message", async (data) => {
+//     //  console.log("helllllllllllooooooooooooooooooooooooooooo send message");
+//     //  console.log({ data });
+//     const newData = await Idea.findById(data.spark._id).populate("Team").populate("WrittenBy");
+//     socket.to(data.team).emit("receive_message", newData);
+//   });
 
-  socket.on("disconnect", () => {
-    console.log("USER DISCONNECTED");
-  });
-});
+//   socket.on("disconnect", () => {
+//     console.log("USER DISCONNECTED");
+//   });
+// });
 console.log(process.env.DB_CONN)
 mongoose
   .connect(process.env.DB_CONN, {
